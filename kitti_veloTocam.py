@@ -33,7 +33,6 @@ mask = point_velo_array[:, 0] > 5
 
 point_velo_array = point_velo_array[mask] # 去除小于图像平面5米的点
 point_cam0 = data.calib.T_cam0_velo.dot(point_velo_array.T).T
-point_piexl = data.calib.K_cam0.dot(point_cam0[:, : - 1].T).T
-shape = point_cam0.shape
-point_piexl = point_piexl / point_cam0[:, 2].reshape(shape[0], 1).repeat(3, 1) # 得到的是[n,3]矩阵
-
+point_piexl = data.calib.K_cam0.dot(point_cam0[:, : - 1].T).T[:,0:-1]
+shape = point_piexl.shape
+point_piexl = point_piexl / point_cam0[:, 2].reshape(shape[0], 1).repeat(2, 1) # 得到的是[n,3]矩阵
