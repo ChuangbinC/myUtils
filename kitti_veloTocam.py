@@ -80,3 +80,8 @@ trap = np.zeros((256, 512)) # 将点云对应到 一张图片上 效果如图是
 for h,w,depth in cloud_point:
     trap[h, w] = depth
 trap = np.expand_dims(trap, axis=2)
+
+scipy.misc.imsave('img_new_sz.png', trap)
+scipy.misc.toimage(trap, high=np.max(trap), low=np.min(trap)).save('img_new_sz.png', cmap='plasma')
+plt.imsave('img_new_sz.png', trap, cmap='plasma')
+
