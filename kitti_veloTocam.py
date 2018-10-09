@@ -9,6 +9,7 @@ import numpy as np
 import scipy.misc
 import matplotlib.pyplot as plt
 import cv2
+# 激光雷达点云数据的路径
 basedir = '/home/ccb/下载' 
 date = '2011_09_26'
 drive = '0001'
@@ -17,6 +18,8 @@ drive = '0001'
 # Calibration and timestamp data are read automatically. 
 # Other sensor data (cameras, IMU, Velodyne) are available via properties 
 # that create generators when accessed.
+
+# 这里的range是决定雷达数据的范围
 data = pykitti.raw(basedir, date, drive, frames=range(0, 50, 5))
 
 # dataset.calib:      Calibration data are accessible as a named tuple
@@ -33,7 +36,10 @@ velo = data.velo # 这个是一个generator
 Pcam = Pvel*T_cam_velo  #这里先要做个转换，将Pvel第4列全部变为1才可以计算（齐次）
 Puv = K*Pcam/Zc  # 这里要将Pcam前三列取出，因为K是3×3矩阵
 '''
-point_velo_array = next(velo)
+# 如果要遍历generator的所有数据使用for
+# for i in velo:
+#     point_velo_array = i
+point_velo_array = next(velo) # 遍历的话，屏蔽
 point_velo_array[:, 3] = 1 # 将第三列变为一，为了矩阵计算
 mask = point_velo_array[:, 0] > 5
 point_velo_array = point_velo_array[mask] # 去除小于图像平面5米的点，kitti官方matlab脚本有，原因不清楚
@@ -74,4 +80,3 @@ trap = np.zeros((256, 512)) # 将点云对应到 一张图片上 效果如图是
 for h,w,depth in cloud_point:
     trap[h, w] = depth
 trap = np.expand_dims(trap, axis=2)
-
